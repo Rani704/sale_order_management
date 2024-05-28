@@ -1,25 +1,36 @@
-import logo from './logo.svg';
+import React, { useContext } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { AuthContext } from './contexts/AuthContext';
+import { ThemeContext } from './contexts/ThemeContext';
+import LoginPage from './components/LoginPage';
+import SaleOrders from './components/SaleOrder';
 import './App.css';
 
-function App() {
+const App = () => {
+  const { isAuthenticated } = useContext(AuthContext);
+  const { isDarkTheme, toggleTheme } = useContext(ThemeContext);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={isDarkTheme ? 'app dark-theme' : 'app'}>
+      <Router>
+         <Routes>
+          <Route path="/login">
+            <LoginPage />
+          </Route>
+          {isAuthenticated && (
+            <Route path="/">
+              <SaleOrders />
+            </Route>
+          )}
+        </Routes>
+      </Router>
+      {isAuthenticated && (
+        <button onClick={toggleTheme}>
+          {isDarkTheme ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+        </button>
+      )}
     </div>
   );
-}
+};
 
 export default App;
